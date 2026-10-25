@@ -1,15 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { useDataProvider } from "ra-core";
-import { Navigate } from "react-router-dom";
+import { Navigate } from "react-router";
 
-import { useConfigurationContext } from "../root/ConfigurationContext";
 import type { CrmDataProvider } from "../providers/types";
 import { LoginSkeleton } from "./LoginSkeleton";
 import { LoginPage } from "./LoginPage";
+import { disableEmailPasswordAuthentication } from "./authConfig";
 
 export const StartPage = () => {
   const dataProvider = useDataProvider<CrmDataProvider>();
-  const { disableEmailPasswordAuthentication } = useConfigurationContext();
   const {
     data: isInitialized,
     error,

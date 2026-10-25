@@ -160,8 +160,8 @@ When modifying contact or company data structures:
 1. Edit the relevant schema file in `supabase/schemas/` (table in `01_tables.sql`, views in `03_views.sql`, etc.)
 2. Generate a migration: `npx supabase db diff --local -f <name>`
 3. Apply it: `npx supabase migration up --local`
-4. Update the sample CSV: `src/components/atomic-crm/contacts/contacts_export.csv`
-5. Update the import function: `src/components/atomic-crm/contacts/useContactImport.tsx`
+4. Update the CSV sample of the resource: `src/components/atomic-crm/contacts/contacts_export.csv`, `src/components/atomic-crm/dataImport/companies_sample.csv` or `src/components/atomic-crm/dataImport/deals_sample.csv`
+5. Update the matching import function: `src/components/atomic-crm/contacts/useContactImport.tsx`, `src/components/atomic-crm/dataImport/useCompanyImport.ts` or `src/components/atomic-crm/dataImport/useDealImport.ts`
 6. If using FakeRest, update data generators in `src/components/atomic-crm/providers/fakerest/dataGenerator/`
 7. Don't forget to update the related view (`contacts_summary`, `companies_summary`) in `03_views.sql`
 8. Don't forget the export functions
@@ -190,3 +190,5 @@ Import `test-data/contacts.csv` via the Contacts page → Import button.
 - Unit tests can be added in the `src/` directory (test files are named `*.test.ts` or `*.test.tsx`)
 - User deletion is not supported to avoid data loss; use account disabling instead
 - Filter operators must be supported by the `supabaseAdapter` when using FakeRest
+- `.npmrc` sets `min-release-age`, so npm refuses a version published too recently: never override it to install a fresher one
+- Optional terse output for solo work: the `concise-dev` style ships at `.claude/styles/concise-dev.md`. To enable it just for yourself, copy it into `.claude/output-styles/` (or `~/.claude/output-styles/`) and run `/output-style concise-dev`, or set `"outputStyle": "concise-dev"` in your own `.claude/settings.local.json`. It is not enabled in the committed `settings.json`.

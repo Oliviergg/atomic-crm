@@ -1,18 +1,17 @@
-import { CheckCircle, Circle, Plus } from "lucide-react";
-import type { Identifier } from "ra-core";
-import { useTranslate } from "ra-core";
-import { Link } from "react-router";
-import { useState } from "react";
-import { CreateButton } from "@/components/admin/create-button";
-import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { CheckCircle, Circle, Plus } from "lucide-react";
+import type { Identifier } from "ra-core";
+import { useCreatePath, useTranslate } from "ra-core";
+import { useState } from "react";
+import { Link } from "react-router";
 
-import { ContactImportButton } from "../contacts/ContactImportButton";
-import { ContactCreateSheet } from "../contacts/ContactCreateSheet";
-import { NoteCreateSheet } from "../notes/NoteCreateSheet";
-import useAppBarHeight from "../misc/useAppBarHeight";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { ContactCreateSheet } from "../contacts/ContactCreateSheet";
+import { DataImportButton } from "../dataImport/DataImportButton";
+import useAppBarHeight from "../misc/useAppBarHeight";
+import { NoteCreateSheet } from "../notes/NoteCreateSheet";
 
 export const DashboardStepper = ({
   step,
@@ -22,10 +21,14 @@ export const DashboardStepper = ({
   contactId?: Identifier;
 }) => {
   const translate = useTranslate();
+  const createPath = useCreatePath();
   const appbarHeight = useAppBarHeight();
   const isMobile = useIsMobile();
   const [contactCreateOpen, setContactCreateOpen] = useState(false);
   const [noteCreateOpen, setNoteCreateOpen] = useState(false);
+  const addContactLabel = translate("resources.contacts.action.add", {
+    _: "Add contact",
+  });
   return (
     <>
       <ContactCreateSheet
@@ -45,12 +48,15 @@ export const DashboardStepper = ({
       >
         <Card className="w-full max-w-[600px]">
           <CardContent className="px-6">
-            <div className="flex items-center justify-between mb-8">
-              <h3 className="text-lg font-bold">
-                {translate("crm.dashboard.stepper.whats_next", {
-                  _: "What's next?",
-                })}
-              </h3>
+            <div className="flex flex-wrap items-center justify-between gap-y-4 mb-8">
+              <div className="flex items-center gap-4">
+                <h3 className="text-lg font-bold">
+                  {translate("crm.dashboard.stepper.whats_next", {
+                    _: "What's next?",
+                  })}
+                </h3>
+                <DataImportButton />
+              </div>
               <div className="w-[150px]">
                 <Progress value={(step / 3) * 100} className="mb-2" />
                 <div className="text-right text-sm">
@@ -88,22 +94,22 @@ export const DashboardStepper = ({
                     {isMobile ? (
                       <Button
                         onClick={() => setContactCreateOpen(true)}
-                        className="gap-2"
-                        variant="outline"
+                        className="w-fit gap-2"
                       >
                         <Plus className="h-4 w-4" />
-                        {translate("resources.contacts.action.new", {
-                          _: "New Contact",
-                        })}
+                        {addContactLabel}
                       </Button>
                     ) : (
-                      <>
-                        <CreateButton
-                          label="resources.contacts.action.new"
-                          resource="contacts"
-                        />
-                        <ContactImportButton />
-                      </>
+                      <Button asChild className="w-fit">
+                        <Link
+                          to={createPath({
+                            resource: "contacts",
+                            type: "create",
+                          })}
+                        >
+                          {addContactLabel}
+                        </Link>
+                      </Button>
                     )}
                   </div>
                 </div>
@@ -125,7 +131,7 @@ export const DashboardStepper = ({
                     <Button
                       onClick={() => setNoteCreateOpen(true)}
                       disabled={step < 2}
-                      className="w-[100px] gap-2"
+                      className="w-fit gap-2"
                     >
                       <Plus className="h-4 w-4" />
                       {translate("resources.notes.action.add", {
@@ -133,8 +139,14 @@ export const DashboardStepper = ({
                       })}
                     </Button>
                   ) : (
-                    <Button asChild disabled={step < 2} className="w-[100px]">
-                      <Link role="button" to={`/contacts/${contactId}/show`}>
+                    <Button asChild disabled={step < 2} className="w-fit">
+                      <Link
+                        to={createPath({
+                          resource: "contacts",
+                          type: "show",
+                          id: contactId,
+                        })}
+                      >
                         {translate("resources.notes.action.add", {
                           _: "Add note",
                         })}

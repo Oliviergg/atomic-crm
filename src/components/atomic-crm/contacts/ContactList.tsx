@@ -1,9 +1,11 @@
 import jsonExport from "jsonexport/dist";
+import { useEffect } from "react";
 import {
   downloadCSV,
   InfiniteListBase,
   useGetIdentity,
   useListContext,
+  useTranslate,
   type Exporter,
 } from "ra-core";
 import { BulkActionsToolbar } from "@/components/admin/bulk-actions-toolbar";
@@ -19,7 +21,7 @@ import { Card } from "@/components/ui/card";
 import type { Company, Contact, Sale, Tag } from "../types";
 import { BulkTagButton } from "./BulkTagButton";
 import { ContactEmpty } from "./ContactEmpty";
-import { ContactImportButton } from "./ContactImportButton";
+import { DataImportButton } from "../dataImport/DataImportButton";
 import {
   ContactListContent,
   ContactListContentMobile,
@@ -87,7 +89,7 @@ const ContactBulkActionButtons = () => (
 const ContactListActions = () => (
   <TopToolbar>
     <SortButton fields={["first_name", "last_name", "last_seen"]} />
-    <ContactImportButton />
+    <DataImportButton resource="contacts" />
     <ExportButton exporter={exporter} />
     <CreateButton />
   </TopToolbar>
@@ -114,7 +116,17 @@ export const ContactListMobile = () => {
 };
 
 const ContactListLayoutMobile = () => {
-  const { isPending, data, error, filterValues } = useListContext();
+  const translate = useTranslate();
+  const { isPending, data, error, filterValues, displayedFilters, setFilters } =
+    useListContext();
+
+  // No search box here to show or clear a name search set on desktop or in a URL
+  const { q, ...filtersWithoutSearch } = filterValues ?? {};
+  useEffect(() => {
+    if (q != null) {
+      setFilters(filtersWithoutSearch, displayedFilters);
+    }
+  });
 
   const hasFilters = filterValues && Object.keys(filterValues).length > 0;
 
@@ -122,8 +134,14 @@ const ContactListLayoutMobile = () => {
 
   return (
     <div>
-      <MobileHeader>
-        <ContactListFilter />
+      <MobileHeader showRefresh>
+        {/* No name search here: the header's global search finds contacts */}
+        <div className="flex flex-1 items-center justify-between">
+          <h1 className="text-xl font-semibold">
+            {translate("resources.contacts.name", { smart_count: 2 })}
+          </h1>
+          <ContactListFilter />
+        </div>
       </MobileHeader>
       <MobileContent>
         <ContactListFilterSummary />

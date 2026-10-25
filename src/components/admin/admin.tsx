@@ -7,8 +7,10 @@ import {
   localStorageStore,
 } from "ra-core";
 import { i18nProvider as defaultI18nProvider } from "@/lib/i18nProvider";
+import { AccessDenied } from "@/components/admin/access-denied";
 import { Layout } from "@/components/admin/layout";
 import { LoginPage } from "@/components/admin/login-page";
+import { NotFound } from "@/components/admin/not-found";
 import { Ready } from "@/components/admin/ready";
 import { ThemeProvider } from "@/components/admin/theme-provider";
 import { AuthCallback } from "@/components/admin/authentication";
@@ -100,12 +102,12 @@ const AdminUI = (props: CoreAdminUIProps) => {
  */
 export const Admin = (props: CoreAdminProps) => {
   const {
-    accessDenied,
+    accessDenied = AccessDenied,
     authCallbackPage = AuthCallback,
     authenticationError,
     authProvider,
     basename,
-    catchAll,
+    catchAll = NotFound,
     children,
     dashboard,
     dataProvider,

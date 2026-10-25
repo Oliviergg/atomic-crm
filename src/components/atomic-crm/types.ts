@@ -19,6 +19,7 @@ export type SignUpData = {
 export type SalesFormData = {
   avatar?: string;
   email: string;
+  secondary_emails?: string[];
   password?: string;
   first_name: string;
   last_name: string;
@@ -39,6 +40,8 @@ export type Sale = {
    * DO NOT UPDATE this field directly, it should be updated by the backend
    */
   email: string;
+
+  secondary_emails?: string[];
 
   /**
    * This is used by the fake rest provider to store the password
@@ -151,6 +154,7 @@ export type Task = {
   due_date: string;
   done_date?: string | null;
   sales_id?: Identifier;
+  created_at?: string;
 } & Pick<RaRecord, "id">;
 
 export type ActivityCompanyCreated = {
@@ -226,3 +230,23 @@ export interface ContactGender {
   label: string;
   icon: ComponentType<{ className?: string }>;
 }
+
+export type SearchResourceName =
+  | "companies"
+  | "contacts"
+  | "deals"
+  | "tasks"
+  | "contact_notes"
+  | "deal_notes";
+
+export type SearchResult = {
+  resource: SearchResourceName;
+  record_id: Identifier;
+  title: string | null;
+  subtitle: string | null;
+  contact_id: Identifier | null;
+  deal_id: Identifier | null;
+  date: string | null;
+  /** The searched fields, to show and highlight where the query matched. */
+  content: string | null;
+};
